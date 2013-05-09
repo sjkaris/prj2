@@ -42,6 +42,7 @@ public class MachinePlayer extends Player {
     // Returns a new move by "this" player.  Internally records the move (updates
     // the internal game board) as a move by "this" player.
     public Move chooseMove() {
+        long start = System.currentTimeMillis();
         Best temp;
         if(theBoard.whites + theBoard.blacks == 20){
             temp = chooseMove(color, -100000, 100000, new HashTableChained(30000), depth - 1);
@@ -56,8 +57,10 @@ public class MachinePlayer extends Player {
             }
             catch(InvalidNodeException e){}
         }
-        System.out.println(temp.score);
+        System.out.println("Score: " + temp.score);
         forceMove(temp.move);
+        long end = System.currentTimeMillis();
+        System.out.println("Time: " + (end-start));
         return temp.move;
     } 
     /**
@@ -85,7 +88,6 @@ public class MachinePlayer extends Player {
                 if( Math.abs(Math.abs(eval) - 1) < .01 || Math.abs(eval) > 1){
                     eval = eval * (depth+1);
                 }
-                prevBoards.insert(currBoard, eval);
             }
             //If winner
             if( Math.abs(Math.abs(eval) - 1) < .01 || Math.abs(eval) > 1){
@@ -115,10 +117,12 @@ public class MachinePlayer extends Player {
                 } 
                 else if(depth > 1){
                     reply = chooseMove(otherPlayer, alpha, beta, prevBoards, depth - 1);
+                    prevBoards.insert(newBoard, reply.score);
                     
                 } else {
                     replyScore = theBoard.evalBoard(color);
                     reply = new Best(replyScore, move);
+                    prevBoards.insert(newBoard, replyScore);
                 }
 
                 //theBoard = oldBoardHolder;

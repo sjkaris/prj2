@@ -439,7 +439,7 @@ public class Board {
             return 1;
         }
         else{
-	        double scoreLength = Math.pow(cTree.longestPath(), 2)  -  1.5*Math.pow(otherCTree.longestPath(), 2);
+	        double scoreLength = Math.pow(cTree.longestPath(), 1)  -  Math.pow(otherCTree.longestPath(), 1);
 	        double scoreNode;
 	        if(cTree.getNumOfNodes() + otherCTree.getNumOfNodes() != 0){
 	          	scoreNode = ((cTree.getNumOfNodes()) - otherCTree.getNumOfNodes())/((cTree.getNumOfNodes()) + otherCTree.getNumOfNodes());
