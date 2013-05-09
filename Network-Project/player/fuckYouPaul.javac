@@ -1,0 +1,54 @@
+public class pooper {
+
+    public Move chooseMove(int player, double alpha, double beta,
+            HashTableChained prevBoards, int depth){
+        try {
+            Best myBest = new Move();
+            Best reply;
+            double score;
+            double replyScore = 0;
+            int otherPlayer = (player + 1) % 2;
+
+            double eval = theBoard.evalBoard(player);
+            //If winner
+            if(eval == 1 || eval == -1){
+                return new Best(eval * depth);
+            } 
+
+            if(player == this.color){
+                myBest.score = alpha;
+            } else {
+                myBest.score = beta;
+            }
+
+            List validMoves = theBoard.ValidMoves(player);
+
+            while(!validMoves.isEmpty()){
+                //Get move, put it on, get reply, take it off
+                Move move = validMoves.front().item();
+                validMoves.front().remove();
+                Board oldBoardHolder = new Board(theBoard);
+                theBoard.updateBoard(move);
+                reply = chooseMove(otherPlayer, alpha, beta, prevBoards, depth - 1);
+                theBoard = oldBoardHolder;
+
+                if((player == this.color) && (reply.score >= myBest.score)){
+                    myBest.move = move;
+                    myBest.score = reply.score;
+                    alpha = relpy.score;
+                } else if (side == (this.color + 1) % 2 && reply.score <= myBest.score) {
+                    myBest.move = move;
+                    myBest.score = reply.score;
+                    beta = reply.score;
+                }
+                if (alpha >= beta){
+                    return myBest;
+                }
+            }
+            return myBest;
+        } catch (InvalidNodeException e){
+            System.err.println(e);
+        }
+    } 
+
+

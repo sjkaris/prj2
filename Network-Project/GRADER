@@ -1,0 +1,189 @@
+GRADER
+
+Name of student running submit: Sumeet Jain`j
+Login of student running submit: CS61b-xl
+
+Second team member's name:Sam Kirschner
+Second team member's login: CS61b-yg
+
+Third team member's nam:Steven Karis
+Third team member's login: CS61b-zg
+
+IMPORTANT:  Once you've submitted Project 2 once, the same team member should
+submit always.  If a different teammate must submit, inform cs61b@cory.eecs of
+all the details.  Include a complete list of team members, and let us know
+which submission you want graded.
+
+If you've submitted your project once, or even written a substantial amount of
+code together, you may not change partners without the permission of the
+instructor.
+===============================================================================
+
+
+
+
+Does your program compile without errors?
+Yes
+
+Have you tested your program on the machines in the Soda CS 61B lab?
+    We tested over sshing into the machines.
+
+Did you successfully implement game tree search?  Did you successfully
+implement alpha-beta pruning?  Are there any limitations on it?  What is the
+default number of search levels set by the one-parameter MachinePlayer
+constructor?
+    We have successfully implemeneted alpha beta pruning. The limitations is around depth 
+    of four or five, based on the computer it is running upon. The defualt depth 
+    is 2, just so it will always run on the soda computers in a short amount of time.
+    It also crushses the random player.
+
+Describe your board evaluation function in some detail.
+	Our evaluation function calls checkNetwork, which returns a tree with three key data 
+    componenets: if the board has a network, the longest path, and the sum of lengths of 
+    all paths. We weight each one of these data points differently. If the board has a 
+    network, it will be weighted either 1 or -1 if the network is a win or a lose. Then,
+    the difference between longest path squared for white and black. We then divided this 
+    differnce of two squares by 101 to ensure that the number is between 0 and 1 exclusive.
+    For the other data point, we calculate the log(sum of paths)^2 / 42 for both color's 
+    connections trees and subtract. We use this formula because it can take 10! can 
+    transform it to the interval (0,1). We then weight these two differneces as .7 and 
+    .3 respectively and add them together to get our final double. 
+
+    We dont have any proof that these weights are ideal. They make sense to us, and they 
+    work somehow extremeley well. So, after experimentation, we decided to keep the above
+    sorta arbitrarily chosen numbers. 
+
+Does your MachinePlayer use any special method of choosing the first few moves?
+    No.
+
+Is there anything else the graders should know to help them read your project?
+    We are willing to bribe you too ;) ;) ;D jkjk we are sleep deprived . 
+    Not really. For more information, or if you are ever just lonely and want to talk,
+    email sumeetjain@berkeley.edu. 
+
+    Seriously, our check network is most likely unique because it doesnt use recursion. 
+    We use a depth first search tree, and store that information for eval board. 
+    OTher than that, have fun ;) !!!
+
+
+
+
+Describe the classes, modules, and interfaces you designed before and while you
+implemented the project.  Your description should include:
+  -  A list of the classes your program use:
+  -  A list of each of the "modules" used in or by MachinePlayer, similar to
+     the list in the "Teamwork" section of the README (but hopefully more
+     detailed).
+  -  For each module, list the class(es) the module is implemented in.
+  -  For each module, say which of your team members implemented it.
+  -  For each module, describe its interface--specifically, the prototype and
+     behavior of each method that is available for external callers (outside
+     the module) to call.  Don't include methods that are only meant to be
+     called from within the module.
+
+     For each method, provide (1) a method prototype and (2) a complete,
+     unambiguous description of the behavior of the method/module.  This
+     description should also appear before the method in your code's comments.
+
+You will probably need to change some of your design decisions as you go; be
+sure to modify this file to reflect these changes before you submit your
+project.  Your design of classes and interfaces with be worth about 10% of your
+grade.
+
+
+
+:::::::::::Classes:::::::::::::::::::::::
+
+MachinePlayer)
+This was largely given to us by the instructors, but we did implement our game tree search in this class.
+We used the chooseMove method to do this. Key functions in this is chooseMove
+
+Board)
+This is where we do everything that relates to the board as a whole. We implemented an 8x8 array using the 
+Board() method. Each of the the entries in the array hold a square, described below. This class checks for 
+valid moves, looks to see if there is a network on the board, updates the board when a move is made, lists 
+out all the valid moves you can make, and also has the function we use to evaluate a board for the game
+tree search method.
+
+Square)
+This is the class that handles the spaces on the board its self. Each square knows what kind of piece, if 
+any, it is. It tracks exactly what networks a piece is a part of, as well as how many adjacent pieces it has. 
+
+Move)
+This class was provided, and handles moves that can be made on the board. It tells you what type of move is
+being made, and where it's going to or coming from depending on the move type. You use this to construct moves
+to pass on to other functions.
+
+Player) This is an abstract class that is extended by all the players of Network, making sure we can force 
+moves for players, and making sure all the players have a choose move function.
+
+testBoard & testSquare)
+These classes run tests on Board and Square respectively. Lots of the tests focus on making sure edge cases 
+are working. This wasnt submitted. See above creepy comment. And please hit me up. 
+Im lonely.
+
+List Package)
+This is merely an implementation of lists to be used by various methods throughout the above classes.
+We also implemented a stack so the absraction/terms were easier to think about.
+
+Dict Package)
+This implements hash tables for use by various methods.
+
+Tree Package)
+This is a helper package for the checkNetwork module. It creates a tree using depth first 
+search and stores the paths into a data structure. Does a lot of the work for checkNetwork
+
+
+:::::::::::::::::::::Modules:::::::::::::::::::::::
+
+Implementing the Board)
+We were able to make the board and it's specifications in the Board class, but all of the pieces in the Square
+class. This module is the most broad of all of our modules, and contained updating the board when a move was made,
+creating an empty board, and largely maintaining the structure of the board and it's contents. The board method
+creates a new empty board. updateBoard takes a move and a color, and updates the board to reflect that move. 
+You can also use getColor in both the Board and Square classes to figure out what's in each space of the board.
+You can create squares for a given x and y coordinate on the board, with a given piece for that spot or not if
+you want it to be empty. You can also update the connections and adjacent pieces when you give a board, using the
+methods updateConnections and updateAdj respectively. This was done by all three of us. 
+
+Checking for Networks)
+We check for networks largely in the Board class and tree package, but also to some extent in the Square class since each piece
+keeps track of it's connections. The method checkNetwork is what you call when you want to check for networks.
+This method takes in the color of the player it wants to check for a network with, and it
+returns a tree with all possible paths from one side of the board to the other. Sumeet implemented checkNetwork.
+It accomplishes this by creating a tree of the paths. The tree either has all paths or 
+all paths leading up to the first network. I created this tree using a depth first search.
+A possible flaw is that it only searches networks in one direction, ie if white, searches from left goal to right goal. If
+black, searches from bottom goal to top goal. We didnt change this because checkNetwork ended up running fine, and 
+our depth search 1 kicked ass against that random bot. 
+
+Choosing a Move)
+We create our game tree search function that chooses a move inside the MachinePlayer class, but this module
+really interacts with methods in every class, since checking for networks, possible moves, and interacting
+with the board all are done in order to choose the best possible move for a player. The method that is called
+in order to find the best move is called chooseMove, and takes in a player color, alpha and beta values, and
+all the board states that have previously been evaluated. It will search to a depth that is determined when a
+machine player is initially created, and return whatever the best move to make is given that breadth of search.
+Depth 1 is enough to destroy random bots and handsome, genius coders, like ourselves. We have set it to a defualt of 3. 
+This was done by all three of us together in some capacity. 
+
+
+Listing all Possible Valid Moves)
+We search for valid moves in the board class, by figuring out what moves are legal to make, and listing those moves.
+In order to figure out what possible moves there are, the you call the method validMoves. This takes in a color
+of a player, and figures out all possible places it can go, returning a list of places you can move to. You can also
+check a move to see if it's valid by giving a move and a color. This was done by both Stephen and Sam. 
+
+
+I hope you enjoy our project.  
+
+
+
+
+
+
+
+
+
+
+
