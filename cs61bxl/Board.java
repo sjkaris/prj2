@@ -447,7 +447,7 @@ public class Board {
             else{
                 scoreNode = 0; 
             }
-            double score = (scoreLength / 151)*1 + (scoreNode)*0;
+            double score = (scoreLength / 101)*1 + (scoreNode)*0;
             if(score > 1){
                 System.out.println("POOOP");
             }
