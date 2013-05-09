@@ -27,7 +27,7 @@ public class MachinePlayer extends Player {
         } else {
             this.color = Square.BLACK;
         }
-        depth = 3; //Will change;
+        depth = 4; //Will change;
         theBoard = new Board();
         myName = "Machine";
     }
@@ -44,9 +44,9 @@ public class MachinePlayer extends Player {
     public Move chooseMove() {
         Best temp;
         if(theBoard.whites + theBoard.blacks == 20){
-            temp = chooseMove(color, -1, 1, new HashTableChained(30000), depth - 1);
+            temp = chooseMove(color, -100000, 100000, new HashTableChained(30000), depth - 1);
         } else { 
-            temp = chooseMove(color,-1,1, new HashTableChained(10000), depth);
+            temp = chooseMove(color,-10000,100000, new HashTableChained(10000), depth);
         }
         if(temp.move.moveKind == Move.QUIT){
             try{
@@ -56,6 +56,7 @@ public class MachinePlayer extends Player {
             }
             catch(InvalidNodeException e){}
         }
+        System.out.println(temp.score);
         forceMove(temp.move);
         return temp.move;
     } 
@@ -76,16 +77,19 @@ public class MachinePlayer extends Player {
             int otherPlayer = (player + 1) % 2;
             double eval;
             BoardId currBoard = new BoardId(theBoard);
-            //if(prevBoards.find(currBoard) != null){
-              //  eval = ((Double) prevBoards.find(currBoard).value());
-            //}
-            //else{
+            if(prevBoards.find(currBoard) != null){
+                eval = ((Double) prevBoards.find(currBoard).value());
+            }
+            else{
                 eval = theBoard.evalBoard(color);
-                //prevBoards.insert(currBoard, eval);
-            //}
+                if( Math.abs(Math.abs(eval) - 1) < .01 || Math.abs(eval) > 1){
+                    eval = eval * (depth+1);
+                }
+                prevBoards.insert(currBoard, eval);
+            }
             //If winner
-            if( Math.abs(Math.abs(eval) - 1) < .01){
-                return new Best(eval * (depth+1));
+            if( Math.abs(Math.abs(eval) - 1) < .01 || Math.abs(eval) > 1){
+                return new Best(eval);
             }
 
             if(player == this.color){
@@ -100,19 +104,20 @@ public class MachinePlayer extends Player {
                 //Get move, put it on, get reply, take it off
                 Move move = (Move) validMoves.front().item();
                 validMoves.front().remove();
-                Board oldBoardHolder = new Board(theBoard);
+                //Board oldBoardHolder = new Board(theBoard);
                 theBoard.updateBoard(move, player);
                 BoardId newBoard = new BoardId(theBoard);
+                double replyScore;
 
-                //if(prevBoards.find(newBoard) != null){
-                    //reply = new Best(((Double)prevBoards.find(newBoard).value()), move);
-                //} 
-                if(depth > 1){
+                if(prevBoards.find(newBoard) != null){
+                    replyScore = ((Double)prevBoards.find(newBoard).value());
+                    reply = new Best(replyScore, move);
+                } 
+                else if(depth > 1){
                     reply = chooseMove(otherPlayer, alpha, beta, prevBoards, depth - 1);
+                    
                 } else {
-                    double replyScore;
                     replyScore = theBoard.evalBoard(color);
-                    //prevBoards.insert(newBoard, replyScore);
                     reply = new Best(replyScore, move);
                 }
 

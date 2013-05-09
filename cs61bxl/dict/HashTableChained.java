@@ -1,6 +1,7 @@
 /* HashTableChained.java */
 
 package cs61bxl.dict;
+
 import cs61bxl.list.*;
 
 /**
@@ -102,8 +103,7 @@ public class HashTableChained implements Dictionary {
   /**
    *  Create a new Entry object referencing the input key and associated value,
    *  and insert the entry into the dictionary.  Return a reference to the new
-   *  entry.  Multiple entries with the same key cannot exist. It will get replaced on
-   *  each insert.
+   *  entry. Multiple keys can exist.
    *
    *  This method should run in O(1) time if the number of collisions is small.
    *
@@ -113,9 +113,7 @@ public class HashTableChained implements Dictionary {
    **/
 
   public Entry insert(Object key, Object value) {
-      if(find(key) != null){
-          remove(key);
-      }
+      
       int pos = compFunction(key.hashCode());
       List theList;
       if(arr[pos] == null){
@@ -131,7 +129,7 @@ public class HashTableChained implements Dictionary {
       theList.insertFront(holder);
       size++;
       if((size / arr.length) > .75){
-        resize();
+        resize(true);
       }
       return holder;
   }
@@ -175,10 +173,16 @@ public class HashTableChained implements Dictionary {
 
   }
 
-  public void resize(){
+  public void resize(boolean re){
     List[] tempTable = arr;
-    int sizeTable = size * 2;
-    if(size == 0){
+    int sizeTable;
+    if(re){
+      sizeTable = size * 2;
+    }
+    else{
+      sizeTable = size / 2;
+    }
+    if(size == 0 || size == 1){
         sizeTable = 2;
     }
     while(!prime(sizeTable)){
@@ -234,7 +238,7 @@ public class HashTableChained implements Dictionary {
         node.remove();
         size--;
         if((size / arr.length) < .25){
-          resize();
+          resize(false);
         }
         return currEntry;
     } catch(InvalidNodeException x) {

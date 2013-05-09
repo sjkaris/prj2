@@ -67,7 +67,7 @@ public class MachinePlayer extends Player {
      *  returns a best containing the best move and its score.
     **/
     public Best chooseMove(int player, double alpha, double beta,
-            HashTableChained prevBoards, int depth, Move prevMove){
+            HashTableChained prevBoards, int depth){
         try {
             Best myBest = new Best();
             Best reply;
@@ -83,7 +83,7 @@ public class MachinePlayer extends Player {
             }
             //If winner
             if(Math.abs(Math.abs(eval) - 1) < .001){
-                return new Best(eval * (depth+1), prevMove);
+                return new Best(eval * (depth+1));
             }
 
             if(player == this.color){
@@ -103,11 +103,11 @@ public class MachinePlayer extends Player {
                 BoardId newBoard = new BoardId(theBoard);
 
                 if(prevBoards.find(newBoard) != null){
-                    reply = new Best( ((Double) prevBoards.find(newBoard).value()) , move);
+                    reply = new Best( ((Double) prevBoards.find(newBoard).value()));
                 }
 
                 if(depth > 1){
-                    reply = chooseMove(otherPlayer, alpha, beta, prevBoards, depth - 1, move);
+                    reply = chooseMove(otherPlayer, alpha, beta, prevBoards, depth - 1);
                 }
                 else {
                     double replyScore;
