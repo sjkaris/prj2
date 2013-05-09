@@ -12,30 +12,30 @@ import cs61bxl.dict.*;
 import player.Move;
 
 public class Board {
-	
-	
-	
-	/* These are Board's variables */
-	protected Square[][] board;
-	//whites and blacks track how many white and black pieces are on the board
-	protected int whites;
-	protected int blacks;
+    
+    
+    
+    /* These are Board's variables */
+    protected Square[][] board;
+    //whites and blacks track how many white and black pieces are on the board
+    protected int whites;
+    protected int blacks;
 
 
 
-	/**
-	* creates an empty board with each Square set to empty
-	**/
-	public Board(){
-		board=new Square[8][8];
-		whites=0;
-		blacks=0;
-		for(int i=0;i<8;i++){
-			for(int j=0;j<8;j++){
-				board[j][i]=new Square(i,j);
-			}
-		}
-	}
+    /**
+    * creates an empty board with each Square set to empty
+    **/
+    public Board(){
+        board=new Square[8][8];
+        whites=0;
+        blacks=0;
+        for(int i=0;i<8;i++){
+            for(int j=0;j<8;j++){
+                board[j][i]=new Square(i,j);
+            }
+        }
+    }
 
     /**
      * Constructor that creates a copy of old board
@@ -52,15 +52,15 @@ public class Board {
         this.updateBoard(new Move(7,7), Square.EMPTY);
     }
 
-	
-	
-	
+    
+    
+    
     
     /**
-    *	checks if moves is valid
-    *	@param Move takes in move m as the move to check
-    *	@param color takes in the color of the piece
-    *	returns true if move is valid, and false if otherwise. 
+    *   checks if moves is valid
+    *   @param Move takes in move m as the move to check
+    *   @param color takes in the color of the piece
+    *   returns true if move is valid, and false if otherwise. 
     **/
     public boolean checkMove(Move m, int color){
         if (m.moveKind == Move.QUIT){
@@ -90,11 +90,11 @@ public class Board {
         return true;
     }
     /**
-    *	checks if the piece being placed is on the playable board for its color, if the board was empty.
-    *	@param x takes in the x coordinate of the desired placement.
-    *	@param y takes in the y coordinate of the desired placement.
-    *	@param color takes in the color of the piece.
-    *	returns true if a piece of that color is in a playable location and false if otherwise.
+    *   checks if the piece being placed is on the playable board for its color, if the board was empty.
+    *   @param x takes in the x coordinate of the desired placement.
+    *   @param y takes in the y coordinate of the desired placement.
+    *   @param color takes in the color of the piece.
+    *   returns true if a piece of that color is in a playable location and false if otherwise.
     **/
     private boolean onBoard(int x, int y, int color){
         if(0<=x && x<8 && 0<=y && y<8){
@@ -126,11 +126,11 @@ public class Board {
     
     
     /**
-     *	Checks if a player has won. If they have not won, then a tree consisting of all paths from
-     *	one side to the other is built and returned.
-     *	@param color the color of the network.
-     *	@return returns a tree consisting of all possible paths from one goal to the next goal. Tree 
-     *	ends building if it has found a network.
+     *  Checks if a player has won. If they have not won, then a tree consisting of all paths from
+     *  one side to the other is built and returned.
+     *  @param color the color of the network.
+     *  @return returns a tree consisting of all possible paths from one goal to the next goal. Tree 
+     *  ends building if it has found a network.
      **/
     public ConnectTree checkNetwork(int color){
         Square[][] starts = getStart(color);
@@ -332,9 +332,9 @@ public class Board {
 
     
     /** 
-    *	This method updates the board after a move is made
-    *	@param move, the move that will be added to the board
-    *	@param color, the color of the player that is making the move
+    *   This method updates the board after a move is made
+    *   @param move, the move that will be added to the board
+    *   @param color, the color of the player that is making the move
     **/
     public void updateBoard(Move m, int color){
         if(color == Square.BLACK && m.moveKind == Move.ADD){
@@ -359,9 +359,9 @@ public class Board {
     
     
     /**
-    *	undoes a move that has been done. 
-    *	@param color c is the color of the move being undone.
-    *	@param move m is the move that was made.
+    *   undoes a move that has been done. 
+    *   @param color c is the color of the move being undone.
+    *   @param move m is the move that was made.
     **/
     public void undoMove(Move m, int c){
         if(m.moveKind == Move.ADD){
@@ -378,9 +378,9 @@ public class Board {
     }
     
     /**
-    *	Returns a list of valid moves for a color for current 
-    *	@param color is the piece being identified
-    *	@return returns a list of Moves that are valid for current board
+    *   Returns a list of valid moves for a color for current 
+    *   @param color is the piece being identified
+    *   @return returns a list of Moves that are valid for current board
     **/
     public List validMoves(int color){
         List valids= new SList();
@@ -439,53 +439,44 @@ public class Board {
             return 1;
         }
         else{
-            
-	        double scoreLength = Math.pow(cTree.longestPath(), 2)  -  1.5*Math.pow(otherCTree.longestPath(), 2);
-
-	        double scoreNode;
-	        if(cTree.getNumOfNodes() + otherCTree.getNumOfNodes() != 0){
-	          	scoreNode = (cTree.getNumOfNodes() - otherCTree.getNumOfNodes())/(cTree.getNumOfNodes() + otherCTree.getNumOfNodes());
-	        }
-	        else{
-	          	scoreNode = 0; 
-	        }
-            double score = (scoreLength / 151)*.9 + (scoreNode)*.1;
+            double scoreLength = Math.pow(cTree.longestPath(), 2)  -  Math.pow(otherCTree.longestPath(), 2);
+            double scoreNode;
+            if(cTree.getNumOfNodes() != 0){
+                scoreNode = ((cTree.getNumOfNodes()) - otherCTree.getNumOfNodes())/(cTree.getNumOfNodes());
+            }
+            else{
+                scoreNode = 0; 
+            }
+            double score = (scoreLength / 151)*1 + (scoreNode)*0;
             if(score > 1){
                 System.out.println("POOOP");
             }
             return score;
-            /*
-            double scoreLength = otherCTree.longestPath() * -1.25 + cTree.longestPath();
-            scoreLength /= 126;
-            double scoreNode = otherCTree.getNumOfNodes() * -1.5 + cTree.getNumOfNodes();
-            scoreNode /= otherCTree.getNumOfNodes() * 1.5 + cTree.getNumOfNodes() + 1;
-            return scoreNode * .5 + scoreLength * .5;
-            */
         }
     }
     
-	    
-	    
-		/**
-		* 	gets the color of the square at position (x,y)
-		*	@param x: the x-coordinate of the desired square.
-		*	@param y: the y-coordinate of the desired square. 
-		*	returns the color (-1 for empty, 0 for white, 1 for black) of the square at position
-		*	(x,y). If (x,y) is not on the board, return -1. 
-		**/
-	public int getColor(int x, int y){
-		if(0 <= x && x<= 7 && 0 <= y && y <= 7){
-			return board[y][x].color;
-		}
-		else{
-			return Square.EMPTY;
-		}
-	}
+        
+        
+        /**
+        *   gets the color of the square at position (x,y)
+        *   @param x: the x-coordinate of the desired square.
+        *   @param y: the y-coordinate of the desired square. 
+        *   returns the color (-1 for empty, 0 for white, 1 for black) of the square at position
+        *   (x,y). If (x,y) is not on the board, return -1. 
+        **/
+    public int getColor(int x, int y){
+        if(0 <= x && x<= 7 && 0 <= y && y <= 7){
+            return board[y][x].color;
+        }
+        else{
+            return Square.EMPTY;
+        }
+    }
 
-	/**
-	 *	gives a pictoral representation of the current board with 0 as white
-	 *	and X as black. 
-	**/
+    /**
+     *  gives a pictoral representation of the current board with 0 as white
+     *  and X as black. 
+    **/
     public String toString(){
         String txt = "  ";
         for(int i = 0; i < 8; i++){
@@ -513,15 +504,15 @@ public class Board {
         return board[y][x];
     }
     /*
-	*returns a hashCode for the board.
+    *returns a hashCode for the board.
     */
     public int hashCode(){
-    	int hashVal = 0;
-	    for(int i = 0; i < 8; i++){
-	      for(int j = 0; j < 8; j++){
-	        hashVal = (3*hashVal + (this.getColor(i,j) + 1))%16908799;
-	      }
-	    }
-	    return hashVal;
+        int hashVal = 0;
+        for(int i = 0; i < 8; i++){
+          for(int j = 0; j < 8; j++){
+            hashVal = (3*hashVal + (this.getColor(i,j) + 1))%16908799;
+          }
+        }
+        return hashVal;
     }
 }

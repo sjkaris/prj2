@@ -5,8 +5,7 @@ package cs61bxl;
 *	a black piece is represented by 1, white 0, and empty -1.
 *	@method updateConnections() -> updates connections from this square.
 *	Invariants: 
-*	- The connections variable is always 
-ed clockwise 
+*	- The connections variable is always ed clockwise 
 *		from the top connection. i.e. [top, top-right, right, ... , top-left].
 *	- if a connection does not exist, the connection is listed as null.
 *	- all connections are stored as their square object.

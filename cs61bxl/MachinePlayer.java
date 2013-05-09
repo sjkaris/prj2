@@ -3,7 +3,7 @@ package cs61bxl;
 
 
 import cs61bxl.list.*;
-import cs61bxl.dict.*;
+import cs61bxl.dict.*;          
 import cs61bxl.tree.*;
 import player.Player;
 import player.Move;
@@ -45,7 +45,7 @@ public class MachinePlayer extends Player {
         long start = System.currentTimeMillis();
         Best temp;
         if(theBoard.whites + theBoard.blacks == 20){
-            temp = chooseMove(color, -100000, 100000, new HashTableChained(30000), depth - 1);
+            temp = chooseMove(color, -100000, 100000, new HashTableChained(30000), depth-1);
         } else { 
             temp = chooseMove(color,-10000,100000, new HashTableChained(10000), depth);
         }
@@ -59,8 +59,8 @@ public class MachinePlayer extends Player {
         }
         System.out.println("Score: " + temp.score);
         forceMove(temp.move);
-        Long end = System.currentTimeMillis();
-        System.out.println("time: " + (end - start));
+        long end = System.currentTimeMillis();
+        System.out.println("Time: " + (end-start));
         return temp.move;
     } 
     /**
@@ -88,6 +88,7 @@ public class MachinePlayer extends Player {
                 if( Math.abs(Math.abs(eval) - 1) < .01 || Math.abs(eval) > 1){
                     eval = eval * (depth+1);
                 }
+                //prevBoards.insert(currBoard, eval);
             }
             //If winner
             if( Math.abs(Math.abs(eval) - 1) < .01 || Math.abs(eval) > 1){

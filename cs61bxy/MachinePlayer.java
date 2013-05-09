@@ -88,6 +88,7 @@ public class MachinePlayer extends Player {
                 if( Math.abs(Math.abs(eval) - 1) < .01 || Math.abs(eval) > 1){
                     eval = eval * (depth+1);
                 }
+                //prevBoards.insert(currBoard, eval);
             }
             //If winner
             if( Math.abs(Math.abs(eval) - 1) < .01 || Math.abs(eval) > 1){
@@ -122,7 +123,7 @@ public class MachinePlayer extends Player {
                 } else {
                     replyScore = theBoard.evalBoard(color);
                     reply = new Best(replyScore, move);
-                    prevBoards.insert(newBoard, replyScore);
+                    //prevBoards.insert(newBoard, replyScore);
                 }
 
                 //theBoard = oldBoardHolder;

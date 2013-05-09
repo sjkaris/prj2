@@ -439,15 +439,15 @@ public class Board {
             return 1;
         }
         else{
-	        double scoreLength = Math.pow(cTree.longestPath(), 1)  -  Math.pow(otherCTree.longestPath(), 1);
+	        double scoreLength = Math.pow(cTree.longestPath(), 2)  -  Math.pow(otherCTree.longestPath(), 2);
 	        double scoreNode;
-	        if(cTree.getNumOfNodes() + otherCTree.getNumOfNodes() != 0){
-	          	scoreNode = ((cTree.getNumOfNodes()) - otherCTree.getNumOfNodes())/((cTree.getNumOfNodes()) + otherCTree.getNumOfNodes());
+	        if(cTree.getNumOfNodes() != 0){
+	          	scoreNode = ((cTree.getNumOfNodes()) - otherCTree.getNumOfNodes())/(cTree.getNumOfNodes());
 	        }
 	        else{
 	          	scoreNode = 0; 
 	        }
-            double score = (scoreLength / 100)*.5 + (scoreNode)*.5;
+            double score = (scoreLength / 101)*1 + (scoreNode)*0;
             if(score > 1){
                 System.out.println("POOOP");
             }
