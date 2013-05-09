@@ -76,13 +76,13 @@ public class MachinePlayer extends Player {
             int otherPlayer = (player + 1) % 2;
             double eval;
             BoardId currBoard = new BoardId(theBoard);
-            if(prevBoards.find(theBoard) != null){
-                eval = ((Double) prevBoards.find(currBoard).value());
-            }
-            else{
+            //if(prevBoards.find(currBoard) != null){
+              //  eval = ((Double) prevBoards.find(currBoard).value());
+            //}
+            //else{
                 eval = theBoard.evalBoard(color);
-                prevBoards.insert(currBoard, eval);
-            }
+                //prevBoards.insert(currBoard, eval);
+            //}
             //If winner
             if( Math.abs(Math.abs(eval) - 1) < .01){
                 return new Best(eval * (depth+1));
@@ -100,23 +100,19 @@ public class MachinePlayer extends Player {
                 //Get move, put it on, get reply, take it off
                 Move move = (Move) validMoves.front().item();
                 validMoves.front().remove();
-                //Board oldBoardHolder = new Board(theBoard);
+                Board oldBoardHolder = new Board(theBoard);
                 theBoard.updateBoard(move, player);
                 BoardId newBoard = new BoardId(theBoard);
 
-                if(prevBoards.find(theBoard) != null){
-                    reply = new Best(((Double)prevBoards.find(newBoard).value()), move);
-                } else if(depth > 1){
+                //if(prevBoards.find(newBoard) != null){
+                    //reply = new Best(((Double)prevBoards.find(newBoard).value()), move);
+                //} 
+                if(depth > 1){
                     reply = chooseMove(otherPlayer, alpha, beta, prevBoards, depth - 1);
                 } else {
                     double replyScore;
-                    if(prevBoards.find(theBoard) != null){
-                        replyScore = ((Double) prevBoards.find(newBoard).value());
-                    }
-                    else{
-                        replyScore = theBoard.evalBoard(color);
-                        prevBoards.insert(newBoard, replyScore);
-                    }
+                    replyScore = theBoard.evalBoard(color);
+                    //prevBoards.insert(newBoard, replyScore);
                     reply = new Best(replyScore, move);
                 }
 
