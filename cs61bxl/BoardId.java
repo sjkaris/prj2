@@ -9,31 +9,26 @@ import java.lang.*;
  * efficent that keeping individual boards for each reference in the ht.
  **/
 public class BoardId{
-    long whiteId; //Binary representation of the location of white pieces.
-                  //1 if square has a white, 0 other wise.
-    long blackId; //Binary representation of the location of black pieces. 
-                  //1 if square has a black, 0 otherwise. 
-                  //The square coords are the location of the binary bit. 
-                  //eg, for square coord (2, 9) look at 29th bit.
+    String id; //String compression of the board;
 
     /**
      * Constructor for boardId. Takes in a board, and updates the 
-     * values for blackId and whiteId accordinly.
+     * value of id appropriately.
      * @param board the board for whose id is wanted.
-     **/
+     */
+
     public BoardId(Board board){
-        whiteId = 0L;
-        blackId = 0L;
-        long powOf2 = 1L;
         Square[][] b = board.board;
+        id = "";
         for(int x = 0; x < b.length; x++){
             for(int y = 0; y < b[0].length; y++){
                 if(b[y][x].color == Square.WHITE){
-                    whiteId += powOf2;
-                } else if (b[y][x].color == Square.BLACK) {
-                    blackId += powOf2;
+                    id += "2";
+                } else if (b[y][x].color == Square.BLACK){
+                    id += "1";
+                } else {
+                    id += "0";
                 }
-                powOf2 = powOf2 * 2;
             }
         }
     }
@@ -45,7 +40,7 @@ public class BoardId{
      * @returns hashCode for board Id.
      **/
     public int hashCode(){
-        return ((Long) whiteId).hashCode() ^ ((Long) blackId).hashCode();
+        return id.hashCode();
     }
 
     /**
@@ -58,9 +53,8 @@ public class BoardId{
      **/
     public boolean equals(Object other){
         if(other instanceof BoardId){ 
-            BoardId otherBoardId = (BoardId) other ;
-            return (whiteId == otherBoardId.whiteId
-                    && blackId == otherBoardId.blackId);
+            BoardId otherBoardId = (BoardId) other;
+            return otherBoardId.id.equals(this.id);
         } else {
             return false;
         }

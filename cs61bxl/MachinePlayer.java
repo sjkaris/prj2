@@ -75,15 +75,16 @@ public class MachinePlayer extends Player {
             Best reply;
             int otherPlayer = (player + 1) % 2;
             double eval;
+            BoardId currBoard = new BoardId(theBoard);
             if(prevBoards.find(theBoard) != null){
-                eval = ((Double) prevBoards.find(theBoard).value());
+                eval = ((Double) prevBoards.find(currBoard).value());
             }
             else{
                 eval = theBoard.evalBoard(color);
-                prevBoards.insert(theBoard, eval);
+                prevBoards.insert(currBoard, eval);
             }
             //If winner
-            if( Math.abs(Math.abs(eval) - 1) < .001){
+            if( Math.abs(Math.abs(eval) - 1) < .01){
                 return new Best(eval * (depth+1));
             }
 
@@ -101,18 +102,20 @@ public class MachinePlayer extends Player {
                 validMoves.front().remove();
                 //Board oldBoardHolder = new Board(theBoard);
                 theBoard.updateBoard(move, player);
+                BoardId newBoard = new BoardId(theBoard);
+
                 if(prevBoards.find(theBoard) != null){
-                    reply = new Best(((Double)prevBoards.find(theBoard).value()), move);
+                    reply = new Best(((Double)prevBoards.find(newBoard).value()), move);
                 } else if(depth > 1){
                     reply = chooseMove(otherPlayer, alpha, beta, prevBoards, depth - 1);
                 } else {
                     double replyScore;
                     if(prevBoards.find(theBoard) != null){
-                        replyScore = ((Double) prevBoards.find(theBoard).value());
+                        replyScore = ((Double) prevBoards.find(newBoard).value());
                     }
                     else{
                         replyScore = theBoard.evalBoard(color);
-                        prevBoards.insert(theBoard, replyScore);
+                        prevBoards.insert(newBoard, replyScore);
                     }
                     reply = new Best(replyScore, move);
                 }

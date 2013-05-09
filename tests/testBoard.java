@@ -193,7 +193,7 @@ public class testBoard{
 		 testChoose.forceMove(addBlack5);
 		 long start = System.currentTimeMillis();
 		 p(testChoose.getBoard());
-		 //p("" + testChoose.chooseMove());
+		 p("" + testChoose.chooseMove());
 		 Long end = System.currentTimeMillis();
 		 p((end - start));
 		 testChoose.forceMove(new Move (2, 7));
@@ -206,7 +206,7 @@ public class testBoard{
 		 testBlock.opponentMove(addBlack4);
 		 testBlock.opponentMove(addBlack5);
 		 p(testBlock.getBoard());
-		 //p("" + testBlock.chooseMove());
+		 p("" + testBlock.chooseMove());
 
 		 p("");
 		 p("");

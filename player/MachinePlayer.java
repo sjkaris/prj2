@@ -42,10 +42,10 @@ public class MachinePlayer extends Player {
     public Move chooseMove() {
       Best temp;
         if(theBoard.whites + theBoard.blacks < 20){
-            temp = chooseMove(color,-1,1, new HashTableChained(10000), addDepth);
+            temp = chooseMove(color,-1,1, new HashTableChained(10000), addDepth, new Move());
         }
         else{
-            temp = chooseMove(color,-1,1, new HashTableChained(10000), stepDepth);
+            temp = chooseMove(color,-1,1, new HashTableChained(10000), stepDepth, new Move());
         }
         if(temp.move.moveKind == Move.QUIT){
             try{
@@ -67,7 +67,7 @@ public class MachinePlayer extends Player {
      *  returns a best containing the best move and its score.
     **/
     public Best chooseMove(int player, double alpha, double beta,
-            HashTableChained prevBoards, int depth){
+            HashTableChained prevBoards, int depth, Move prevMove){
         try {
             Best myBest = new Best();
             Best reply;
@@ -83,7 +83,7 @@ public class MachinePlayer extends Player {
             }
             //If winner
             if(Math.abs(Math.abs(eval) - 1) < .001){
-                return new Best(eval * (depth+1));
+                return new Best(eval * (depth+1), prevMove);
             }
 
             if(player == this.color){
@@ -107,7 +107,7 @@ public class MachinePlayer extends Player {
                 }
 
                 if(depth > 1){
-                    reply = chooseMove(otherPlayer, alpha, beta, prevBoards, depth - 1);
+                    reply = chooseMove(otherPlayer, alpha, beta, prevBoards, depth - 1, move);
                 }
                 else {
                     double replyScore;
