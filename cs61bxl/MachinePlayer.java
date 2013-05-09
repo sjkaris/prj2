@@ -18,6 +18,7 @@ public class MachinePlayer extends Player {
     int color;
     int depth;
     String myName;
+    boolean firstMove;
 
   // Creates a machine player with the given color.  Color is either 0 (black)
   // or 1 (white).  (White has the first move.)
@@ -27,7 +28,8 @@ public class MachinePlayer extends Player {
         } else {
             this.color = Square.BLACK;
         }
-        depth = 4; //Will change;
+        firstMove = true;
+        depth = 3; //Will change;
         theBoard = new Board();
         myName = "Machine";
     }
@@ -44,10 +46,22 @@ public class MachinePlayer extends Player {
     public Move chooseMove() {
         long start = System.currentTimeMillis();
         Best temp;
-        if(theBoard.whites + theBoard.blacks == 20){
-            temp = chooseMove(color, -100000, 100000, new HashTableChained(30000), depth-1);
+        if(firstMove){
+            Move first;
+            if(this.color == Square.WHITE){
+                first = new Move(7,3);
+            }
+            else{
+                first = new Move(3,7);
+            }
+            forceMove(first);
+            firstMove = false;
+            return first;
+        }
+        else if(theBoard.whites + theBoard.blacks == 20){
+            temp = chooseMove(color, Integer.MIN_VALUE, Integer.MAX_VALUE, new HashTableChained(30000), depth-1);
         } else { 
-            temp = chooseMove(color,-10000,100000, new HashTableChained(10000), depth);
+            temp = chooseMove(color,Integer.MIN_VALUE, Integer.MAX_VALUE, new HashTableChained(10000), depth);
         }
         if(temp.move.moveKind == Move.QUIT){
             try{
@@ -81,17 +95,17 @@ public class MachinePlayer extends Player {
             double eval;
             BoardId currBoard = new BoardId(theBoard);
             if(prevBoards.find(currBoard) != null){
-                eval = ((Double) prevBoards.find(currBoard).value());
+            eval = ((Double) prevBoards.find(currBoard).value());
             }
             else{
                 eval = theBoard.evalBoard(color);
-                if( Math.abs(Math.abs(eval) - 1) < .01 || Math.abs(eval) > 1){
+                if( Math.abs(Math.abs(eval) - 100) < .01 || Math.abs(eval) > 100){
                     eval = eval * (depth+1);
                 }
                 //prevBoards.insert(currBoard, eval);
             }
             //If winner
-            if( Math.abs(Math.abs(eval) - 1) < .01 || Math.abs(eval) > 1){
+            if( Math.abs(Math.abs(eval) - 100) < .01 || Math.abs(eval) > 100){
                 return new Best(eval);
             }
 

@@ -441,7 +441,7 @@ public class Board {
         else{
 	        double scoreLength = Math.pow(cTree.longestPath(), 2)  -  Math.pow(otherCTree.longestPath(), 2);
 	        double scoreNode;
-	        if(cTree.getNumOfNodes() != 0){
+	        if(cTree.getNumOfNodes() != 0 ){
 	          	scoreNode = ((cTree.getNumOfNodes()) - otherCTree.getNumOfNodes())/(cTree.getNumOfNodes());
 	        }
 	        else{

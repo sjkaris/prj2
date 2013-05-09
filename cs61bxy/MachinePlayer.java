@@ -18,6 +18,7 @@ public class MachinePlayer extends Player {
     int color;
     int depth;
     String myName;
+    boolean firstMove;
 
   // Creates a machine player with the given color.  Color is either 0 (black)
   // or 1 (white).  (White has the first move.)
@@ -27,7 +28,8 @@ public class MachinePlayer extends Player {
         } else {
             this.color = Square.BLACK;
         }
-        depth = 4; //Will change;
+        firstMove = true;
+        depth = 3; //Will change;
         theBoard = new Board();
         myName = "Machine";
     }
@@ -44,6 +46,18 @@ public class MachinePlayer extends Player {
     public Move chooseMove() {
         long start = System.currentTimeMillis();
         Best temp;
+        if(firstMove){
+            Move first;
+            if(this.color == Square.WHITE){
+                first = new Move(0,4);
+            }
+            else{
+                first = new Move(4,7);
+            }
+            forceMove(first);
+            firstMove = false;
+            return first;
+        }
         if(theBoard.whites + theBoard.blacks == 20){
             temp = chooseMove(color, -100000, 100000, new HashTableChained(30000), depth - 1);
         } else { 
@@ -118,12 +132,12 @@ public class MachinePlayer extends Player {
                 } 
                 else if(depth > 1){
                     reply = chooseMove(otherPlayer, alpha, beta, prevBoards, depth - 1);
-                    prevBoards.insert(newBoard, reply.score);
+                    prevBoards.insert(newBoard, myBest.score);
                     
                 } else {
                     replyScore = theBoard.evalBoard(color);
                     reply = new Best(replyScore, move);
-                    //prevBoards.insert(newBoard, replyScore);
+                    prevBoards.insert(newBoard, replyScore);
                 }
 
                 //theBoard = oldBoardHolder;
@@ -138,6 +152,7 @@ public class MachinePlayer extends Player {
                     myBest.score = reply.score;
                     beta = reply.score;
                 }
+                prevBoards.insert(newBoard, myBest.score);
                 if (alpha >= beta){
                     return myBest;
                 }

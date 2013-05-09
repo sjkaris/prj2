@@ -433,13 +433,13 @@ public class Board {
         ConnectTree otherCTree = checkNetwork(otherC); 
         
         if(otherCTree.hasNetwork()){
-            return -1;
+            return -100;
         }
         else if (cTree.hasNetwork()){
-            return 1;
+            return 100;
         }
         else{
-            double scoreLength = Math.pow(cTree.longestPath(), 2)  -  Math.pow(otherCTree.longestPath(), 2);
+            double scoreLength = Math.pow(cTree.longestPath(), 2)  -  1.3*Math.pow(otherCTree.longestPath(), 2);
             double scoreNode;
             if(cTree.getNumOfNodes() != 0){
                 scoreNode = ((cTree.getNumOfNodes()) - otherCTree.getNumOfNodes())/(cTree.getNumOfNodes());
@@ -447,7 +447,7 @@ public class Board {
             else{
                 scoreNode = 0; 
             }
-            double score = (scoreLength / 101)*1 + (scoreNode)*0;
+            double score = (scoreLength / 101)*1 + (scoreNode)*0.05;
             if(score > 1){
                 System.out.println("POOOP");
             }
