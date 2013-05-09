@@ -1,8 +1,8 @@
 /* HashTableChained.java */
 
 package cs61bxl.dict;
-
 import cs61bxl.list.*;
+
 /**
  *  HashTableChained implements a Dictionary as a hash table with chaining.
  *  All objects used as keys must have a valid hashCode() method, which is
@@ -32,18 +32,15 @@ public class HashTableChained implements Dictionary {
 
     //Load factor of 1
   public HashTableChained(int sizeEstimate) {
-     size = 0;
-      int sizeTable = sizeEstimate;
-      while(!prime(sizeTable)){
-        sizeTable++;
-      }
-      if(sizeTable < 0){
-        sizeTable = 2000000011;
-      }
-      arr = new SList[sizeTable];
-      for(int i = 0; i < arr.length; i++)
-          arr[i] = new SList();
-
+    size = 0;
+    int sizeTable = ((int) (sizeEstimate * 1.5));
+    while(!prime(sizeTable)){
+      sizeTable++;
+    }
+    if(sizeTable < 0){
+      sizeTable = 2000000011;
+    }
+    arr = new SList[sizeTable];
   }
 
   public boolean prime(int p){
@@ -77,7 +74,7 @@ public class HashTableChained implements Dictionary {
 
   int compFunction(int code) {
     // Replace the following line with your solution.
-    return Math.abs(code) % arr.length;
+    return Math.abs(((131*code + 4093) % 2000000011) % arr.length);
   }
 
   /** 
@@ -105,8 +102,8 @@ public class HashTableChained implements Dictionary {
   /**
    *  Create a new Entry object referencing the input key and associated value,
    *  and insert the entry into the dictionary.  Return a reference to the new
-   *  entry.  Multiple entries with the same key (or even the same key and
-   *  value) can coexist in the dictionary.
+   *  entry.  Multiple entries with the same key cannot exist. It will get replaced on
+   *  each insert.
    *
    *  This method should run in O(1) time if the number of collisions is small.
    *
@@ -116,13 +113,26 @@ public class HashTableChained implements Dictionary {
    **/
 
   public Entry insert(Object key, Object value) {
+      if(find(key) != null){
+          remove(key);
+      }
       int pos = compFunction(key.hashCode());
-      List theList = arr[pos];
+      List theList;
+      if(arr[pos] == null){
+        arr[pos] = new SList();
+        theList = arr[pos];
+      }
+      else{
+        theList = arr[pos];
+      }
       Entry holder = new Entry();
       holder.key = key;
       holder.value = value;
       theList.insertFront(holder);
       size++;
+      if((size / arr.length) > .75){
+        resize();
+      }
       return holder;
   }
 
@@ -141,9 +151,18 @@ public class HashTableChained implements Dictionary {
   public Entry find(Object key) {
     // Replace the following line with your solution.
     try{
+        if(isEmpty()){
+            return null;
+        }
         int pos = compFunction(key.hashCode());
         List theList = arr[pos];
+        if(theList == null){
+            return null;
+        }
         ListNode node = theList.front();
+        if(node == null){
+            return null;
+        }
         Entry currEntry = (Entry) node.item();
         while(!currEntry.key.equals(key)){
             node = node.next();
@@ -154,6 +173,32 @@ public class HashTableChained implements Dictionary {
         return null;
     }
 
+  }
+
+  public void resize(){
+    List[] tempTable = arr;
+    int sizeTable = size * 2;
+    if(size == 0){
+        sizeTable = 2;
+    }
+    while(!prime(sizeTable)){
+      sizeTable++;
+    }
+    size = 0;
+    arr = new List[sizeTable];
+    for(int i = 0; i < tempTable.length; i++){
+      try{
+        if(tempTable[i] != null){
+          if(tempTable[i].length() > 0){
+            ListNode tempNode = tempTable[i].front();
+            do{
+              insert(((Entry) tempNode.item()).key(), ((Entry)tempNode.item()).value());
+              tempNode = tempNode.next();
+            }while(tempNode != null);
+          }
+        }
+      }catch(InvalidNodeException e){}
+    }
   }
 
   /** 
@@ -174,7 +219,13 @@ public class HashTableChained implements Dictionary {
     try{
         int pos = compFunction(key.hashCode());
         List theList = arr[pos];
+        if(theList == null){
+            return null;
+        }
         ListNode node = theList.front();
+        if(node == null){
+            return null;
+        }
         Entry currEntry = (Entry) node.item();
         while(!currEntry.key.equals(key)){
             node = node.next();
@@ -182,6 +233,9 @@ public class HashTableChained implements Dictionary {
         }
         node.remove();
         size--;
+        if((size / arr.length) < .25){
+          resize();
+        }
         return currEntry;
     } catch(InvalidNodeException x) {
         return null;
@@ -206,10 +260,12 @@ public class HashTableChained implements Dictionary {
       for(int i = 0; i < arr.length ; i++){
           System.out.print("Hash " + i + " : ");
           boolean subtract = false;
-          for(int j = 0; j < arr[i].length(); j++){
-              System.out.print("X");
-              count++;
-              subtract = true;
+          if(arr[i] != null){
+            for(int j = 0; j < arr[i].length(); j++){
+                System.out.print("X");
+                count++;
+                subtract = true;
+            }
           }
           if(subtract)
               count--;

@@ -21,5 +21,8 @@ public class Entry {
   public Object value() {
     return value;
   }
+  public String toString(){
+  	return "key: " + key + " Value: " + value;
+  }
 
 }
